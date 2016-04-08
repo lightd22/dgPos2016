@@ -1,0 +1,10 @@
+# Untracked Files:
+#   old/  [dir]
+#   *.ttt
+#   *.lot
+#   *.lof
+
+old/
+*.ttt
+*.lot
+*.lof
