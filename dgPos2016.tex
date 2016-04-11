@@ -164,29 +164,29 @@ The remainder of the paper is structured as follows. In Section \ref{sec:dg} we 
 
 \section{Preliminaries} \label{sec:dg}
 \subsection*{Spatial discretization}
-The proposed method will be based on the standard Runge-Kutta DG (RKDG) formulation presented in \citet{Hesthaven:2007aa}, \citet{durran2010numerical}, and \citet{Lauritzen:2011aa}. Let $S^h$ be a Cartesian discretization of the computational domain $\Omega$ into $h$ elements with width $\dx$. Define $V_N^h$ as the vector space of piecewise polynomials on $S^h$ which is formally given by $V_N^h = \left\{ p : p\big|_{s_i} \in \mathbb{P}_N(s_i) \, \forall s_i \in S^h \right\}$ where $\mathbb{P}_N(s_i)$ is the space of polynomials in $s_i$ up to degree $N$. Let $\phi(x,t) \in V_N^h$ be the DG approximation to the solution of \eqref{eq:transp}. We express this approximation at time $t^n$ within element $s_i$ as an expansion of basis polynomials $\varphi_k(x)$,
+The proposed method will be based on the standard Runge-Kutta DG (RKDG) formulation presented in \citet{Hesthaven:2007aa}, \citet{durran2010numerical}, and \citet{Lauritzen:2011aa}. Let $S^h$ be a Cartesian discretization of the computational domain $\Omega$ into $h$ elements with width $\dx$. Define $V_N^h$ as the vector space of piecewise polynomials on $S^h$ which is formally given by $V_N^h = \left\{ p : p\big|_{s_i} \in \mathbb{P}_N(s_i) \, \forall s_i \in S^h \right\}$ where $\mathbb{P}_N(s_i)$ is the space of polynomials in $s_i$ up to degree $N$. Let $\phi(x,t) \in V_N^h$ be the DG approximation to the solution of \eqref{eq:transp}. We express this approximation at time $t^n$ within element $s_i$ as an expansion of basis polynomials $\varphi_k(\bfv{x})$,
 \al{ \label{polyExp}
-\phi_{s_i}^n(x)  = \sum \limits_{k} a_{i,k}(t^n) \, \varphi_k (x) \,\,\text{ for }\,\, x\in s_i,
+\phi_{s_i}^n(\bfv{x})  = \sum \limits_{k} a_{i,k}(t^n) \, \varphi_k (\bfv{x}) \,\,\text{ for }\,\, \bfv{x}\in s_i,
 }
-where the summation is taken over the total number of basis polynomials. For one-dimensional problems, popular choices for the basis polynomials are either Legendre polynomials or Lagrange interpolating polynomials. Methods utilizing Lagrange polynomials  have further options for the set of points through which the basis polynomials interpolate; for this paper we will use the $N+1$ Gauss-Legendre-Lobatto (GLL) quadrature nodes $x_k$ that have been mapped to $s_i$ and have corresponding quadrature weights $w_k$ where $k=0,...,N$. Discontinuous Galerkin methods which implement a Legendre basis are sometimes known as modal methods (because the coefficients $a_{i,k}$ represent the modes of the Legendre polynomial), while methods using Lagrange polynomials are called nodal methods (because the coefficient $a_{i,k}$ coincides with the value of $\phi_{s_i}^n(x)$ at the node $x_k$). When solving problems in two or higher space dimensions, we will extend the one-dimensional basis functions via tensor products.
+where the summation is taken over the total number of basis polynomials. For one-dimensional problems, popular choices for the basis polynomials are either Legendre polynomials or Lagrange interpolating polynomials. Methods utilizing Lagrange polynomials  have further options for the set of points through which the basis polynomials interpolate; for this paper we will use the $N+1$ Gauss-Legendre-Lobatto (GLL) quadrature nodes $x_k$ that have been mapped to $s_i$ and have corresponding quadrature weights $w_k$ where $k=0,...,N$. Discontinuous Galerkin methods which implement a Legendre basis are sometimes known as modal methods (because the coefficients $a_{i,k}$ represent the modes of the Legendre polynomial), while methods using Lagrange polynomials are called nodal methods (because the coefficient $a_{i,k}$ coincides with the value of $\phi_{s_i}^n(\bfv{x})$ at the node $x_k$). When solving problems in two or higher space dimensions, we will extend the one-dimensional basis functions via tensor products.
 
-The Discontinuous Galerkin approximation to equation \eqref{eq:transp} is obtained by multiplying the differential equation by a test function $\varphi_k(x)$ and formally integrating by parts over $s_i$ to get
+The Discontinuous Galerkin approximation to equation \eqref{eq:transp} is obtained by multiplying the differential equation by a test function $\varphi_k(\bfv{x})$ and formally integrating by parts over $s_i$ to get
 \al{ \label{weak2}
-\frac{d}{dt} \int_{s_i} \phi_{s_i}^n(x) \varphi_k(x) \,dx = \int_{s_i}  \phi_{s_i}(x,t) \, \bfv{u}(x,t) \cdot \nabla \varphi_k(x) \, dx - \int_{\partial s_i} \phi_{s_i}(s,t) \bfv{u}(s,t) \cdot \bfv{n} \varphi_k(s)ds \quad \forall \varphi_k \in V_N^h
+\frac{d}{dt} \int_{s_i} \phi_{s_i}^n(\bfv{x}) \varphi_k(\bfv{x}) \,d\bfv{x} = \int_{s_i}  \phi_{s_i}(\bfv{x},t) \, \bfv{u}(\bfv{x},t) \cdot \nabla \varphi_k(\bfv{x}) \, d\bfv{x} - \int_{\partial s_i} \phi_{s_i}(s,t) \bfv{u}(s,t) \cdot \bfv{n} \varphi_k(s)ds \quad \forall \varphi_k \in V_N^h
 }
 %\al{ \label{weak1}
 %\frac{d}{dt} \int_{s_i} \phi_{s_i}^n(x) \varphi_k(x) \,dx = - \int_{s_i} \nabla \cdot \left( \bfv{u}(x,t)\, \phi_{s_i}(x,t) \right) \varphi_k(x) \, dx \quad \forall \varphi_k \in V_N^h.
 %}
 %Formally integrating by parts this becomes
 
-where $\bfv{n}$ is the outward-facing unit normal on the boundary of $s_i$. The boundary term in \eqref{weak2} is not precisely defined because $\phi$ is discontinuous across element interfaces. To remedy this, the exact flux along the boundary is replaced with the numerical flux function $\hat{F}( \cdot, \cdot )$. A simple choice for scalar transport is the upwind flux
+where $\bfv{n}$ is the outward-facing unit normal on the boundary of $s_i$. The flux term $\phi_{s_i}(s,t) \bfv{u}(s,t)$ present in the boundary integral in \eqref{weak2} is not uniquely defined because $\phi$ is discontinuous across element interfaces. To specify a unique approximation this term is replaced with a numerical flux function $\hat{F}( \cdot, \cdot )$. A simple choice for transport equations is the upwind flux
 \beq 
 \numflux{h} 	= \begin{cases} 
 					\bfv{u}\phi_{h}^{-} & \mbox{if } \bfv{u}\cdot\bf{n}\ge 0 \\
 					\bfv{u}\phi_{h}^{+} & \mbox{if } \bfv{u}\cdot\bf{n} < 0 
 				 \end{cases}.
 \eeq{numflux}
-where $\phi_{h}^{-}$ and $\phi_{h}^{+}$ are the DG approximations to the edge value from within $s_i$ and $s_{i+1}$, respectively. Although upwind fluxes give only a first-order scheme in standard finite volume methods, they do not adversely affect the spectral accuracy of DG schemes. 
+where $\phi_{h}^{-}$ refers to the local (or interior) solution at the interface and $\phi_{h}^{+}$ refers to the neighbor (or exterior) solution. Although upwind fluxes result in a first-order scheme in standard finite volume methods, they do not adversely affect the spectral accuracy of DG schemes. 
 
 Substituting the expansion \eqref{polyExp} into \eqref{weak2} gives the matrix equation
 \al{ \label{matrixEqn}
@@ -194,19 +194,19 @@ Substituting the expansion \eqref{polyExp} into \eqref{weak2} gives the matrix e
 }
 where $\bf{a_i}$ is the vector of expansion coefficients, $\bfv{M}$ is the mass matrix with entries
 \al{ \label{massMatrix}
-\bfv{M}_{j,k} = \int_{s_i} \varphi_j(x) \varphi_k(x) \, dx,
+\bfv{M}_{j,k} = \int_{s_i} \varphi_j(\bfv{x}) \varphi_k(\bfv{x}) \, d\bfv{x},
 }
 and $\bfv{G}$ is the vector
 \al{ \label{gDef}
-\bfv{G}_k = \int_{s_i}  \phi_{s_i}(x,t) \, \bfv{u}(x,t) \cdot \nabla \varphi_k(x) \, dx - \int_{\partial s_i} \numflux{s_i} \cdot \bfv{n} \varphi_k(s)ds.
+\bfv{G}_k = \int_{s_i}  \phi_{s_i}(\bfv{x},t) \, \bfv{u}(\bfv{x},t) \cdot \nabla \varphi_k(\bfv{x}) \, d\bfv{x} - \int_{\partial s_i} \numflux{s_i} \cdot \bfv{n} \varphi_k(s)ds.
 }
 The integrals in \eqref{massMatrix} and \eqref{gDef} are approximated using numerical quadrature. Modal methods use a high order accurate Gaussian rule, while nodal approaches opt instead for the natrual GLL rule defined by the interpolation nodes. As a consequence of the orthogonality of Legendre polynomials, $\bfv{M}$ is diagonal for modal methods which simplifies the solution of \eqref{matrixEqn}. On the other hand, if the mass matrix integral in \eqref{massMatrix} for a nodal method were to be evaluated exactly $\bfv{M}$ would not be diagonal and solving \eqref{matrixEqn} would require a matrix inversion at each stage in a time step. However, if the GLL integration rule implied by the underlying interpolation grid (which is not exact) is used to approximate the integrals, the resulting mass matrix will be diagonal. This technique is sometimes known as mass lumping \citep[p. 57]{kgs2013spectral}. To evolve forward in time, the semi-descrete system in \eqref{matrixEqn} is integrated using a strong stability preserving Runge-Kutta (SSPRK) method. For the numerical simulations performed in this paper, the three-stage, third-order SSPRK method from \citet{Gottlieb:2009aa} is used.
 
-When solving a $d$--dimensional problem, an individual element has $(N+1)^d$ spatial degrees of freedom when using a tensor product basis. Throughout this paper, we will define a discrete sub--element data representation which uses the same number of degrees of freedom for the purpose of defining where the numerical solution should be nonnegative. For nodal methods this representation will be the local approximation evaluated at the tensor product GLL nodes. As a consequence of Lagrange interpolation these values coincide exactly with the expansion coefficients themselves. For modal methods we will use an uniform Cartesian subgrid denoted $s_{ik}$, $k=1,\dots,(N+1)^d$ such that $s_i = \cup_{k} s_{ik}$. Then we represent the sub--element solution with the collection of subcell averages $\phi_{ik}$ given by
+When solving a $d$--dimensional problem, an individual element has $(N+1)^d$ spatial degrees of freedom when using a tensor product basis. Throughout this paper, we will define a discrete sub--element data representation which uses the same number of degrees of freedom for the purpose of defining where the numerical solution should be nonnegative. For nodal methods this representation will be the local approximation evaluated at the tensor product GLL nodes. As a consequence of Lagrange interpolation these values coincide exactly with the expansion coefficients themselves. For modal methods we will use an uniform Cartesian subgrid denoted by $s_{ik}$, $k=1,\dots,(N+1)^d$ such that $s_i = \cup_{k} s_{ik}$. Then the sub--element mass averages of the solution can be represented by the collection of averages $\phi_{ik}$ defined by
 \al{\label{subcellAvg}
 \phi_{ik}^n = \frac{1}{|s_{ik}|} \int_{s_{ik}} \phi_{s_i}^n(\bfv{x}) \, d\bfv{x}, \quad \forall s_{ik} \in s_i.
 }
-Equation \eqref{subcellAvg} can be also be written in terms of a projection operator $P$ as $\bfv{\phi}_i = P \bfv{a}_i$. After limiting the sub--element solution (when necessary) we must apply a reconstruction operator $R$ to translate the sub--cell modifications back to the polynomial coefficients at the end of the time step. As a result of our sub--element reconstruction using the same number of degrees of freedom as the original polynomial approximation, the matrix representation of $P$ will be nonsingular and $R$ will correspond to its inverse $P^{-1}$. 
+Equation \eqref{subcellAvg} can be also be written using a projection operator $P$ as $\bfv{\phi}_i = P \bfv{a}_i$. After the sub--element solution is adjusted it is necessary to apply a reconstruction operator $R$ to translate these modifications to the polynomial coefficients at the end of the time step. As a result of our sub--element reconstruction using the same number of degrees of freedom as the original polynomial approximation, the matrix representation of $P$ will be nonsingular and $R$ will correspond to its matrix inverse $P^{-1}$. 
 
 \subsection*{ZS Positivity Preservation}
 The ZS limiter is a two-stage bounds preserving limiter first proposed for scalar conservation laws in \citet{Zhang2010}.  In the first stage, the local polynomial approximation is modified so that its mean value over a cell is nonnegative after the forward update. Then in the second stage the polynomial is adjusted again so that the final approximation is positive within the element. If $\phi$ is the local DG approximation for the element $s_i$ with average value $\pbar{\phi}$, the modified polynomial $\phi^*$ for either stage will be of the form
@@ -260,16 +260,11 @@ so by construction so TMAR limiting maintains conservation.
 
 Figure~\ref{fig:polyModCompare} illustrates the difference between the linear rescaling used in the ZS limiter (shown in red) and the TMAR adjustment described above (shown in green) when applied to a fifth degree nodal polynomial $\phi(x)$ (shown in blue) which has negative values at three of the GLL nodes: two at the element edges and one near the center. After applying the linear ZS rescaling, the two largest magnitude negative nodal values have been scaled to zero while the smaller magnitude negative in the center is pushed into positive values. Moving this node into positive values requires that more mass be pulled away from the other positive nodes in order to maintain conservation. The result is a modified polynomial has been noticeably damped compared to the original polynomial. The impact of the TMAR modification on $\phi$ is less severe because the modification is nonlinear: all negative nodal values are set exactly to zero while nonnegative values undergo a separate reduction. Rather than being pushed into positive values, the central negative is set to zero which requires that less mass be removed from the nonnegative nodes to compensate.
 
-We conclude this section with a theorem that indicates that TMAR limiting does not degrade the high--order accuracy as the element spacing is refined.
-
+We conclude this section with a theorem that indicates that TMAR limiting does not degrade the high--order accuracy as the element spacing is refined. For a proof of Theorem~\ref{thm:acc} see the Appendix.
 \begin{restatable}{thm}{tmarAcc}
 \label{thm:acc}
 Let $\phi_{s_i}(x)$ be the unmodified $M$th order DG approximation to $\psi(x)$ in $s_i$ and assume that $\pbar{\phi}_{s_i} \geq 0$. Then the TMAR limited solution \eqref{eq:tmar} is also an $M$th order approximation to $\psi(x)$.
 \end{restatable}
-
-\begin{proof}
-See \appendix ( TO DO: ADD APPENDIX REFERENCE ).
-\end{proof}
 \section{TMAR Positivity Preservation in 2D} \label{sec:pp2d}
 
 The TMAR limiter described in Section \ref{sec:pp1d} can be extended to two-dimensional (and higher) problems. Let $\pbar{\phi}_{ij}$ denote the average value of the degree $N$ local discontinuous Galerkin (DG) approximating polynomial within element $s_{ij}$. A DG scheme for updating $\pbar{\phi}_{ij}$ in a forward Euler step will satisfy
