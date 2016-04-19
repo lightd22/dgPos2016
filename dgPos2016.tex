@@ -359,18 +359,6 @@ where
 }
 If the mesh is isotropic and $\max |u| = \max |v|$, this condition will correspond to a maximum time step which is half as large as in the corresponding one-dimensional problem. Adopting a strategy similar to that in many practical applications, solutions we present obtained using a time step that brings the maximum local Courant number throughout the integration to no greater than 95\% of its limiting value, unless otherwise noted.
 
-Our first numerical test examines the order of convergence on the two-dimensional solid-body rotation test on the unit square domain $\Omega = [0,1] \times [0,1]$. The velocity field is time independent and given by
-\al{ \label{sbrVel}
-u(x,y) = -2\pi \left( y - \frac{1}{2}\right), \quad v(x,y) = 2\pi \left( x - \frac{1}{2}\right).
-}
-This flow is normalized so that one complete rotation is made over one time unit. The tracer field considered is given by the two-dimensional $C^5$ cosine bell centered at $(x_0,y_0) = (\frac{1}{4},\frac{1}{4})$ with radius $r_0 = \frac{1}{8}$. The initial data is given by 
-\al{ \label{sbrICs}
-\psi_0(x,y) = \begin{cases}
-       \displaystyle{\left( \frac{1+\cos(\pi s(x,y) )}{2} \right)^{3}} & \mbox{\rm if } s(x,y) \le 1 \\
-       0 & \mbox{\rm otherwise} \end{cases},
-}
-where $s(x,y) = r_0 \sqrt{(x-x_0)^2+(y-y_0)^2}$. The time steps are chosen such that $\dt = \mathcal{O}(\dx^{N/3})$ so that spatial convergence is observed. Error norms and convergence rates for the TMAR and ZS limited solutions after one revolution are given in Table~\ref{sbrConv} for quadratic, cubic, and quartic piecewise polynomials. We observe that both methods perform similarly and maintain the designed order of convergence from the original DG scheme.
-
 In multi-dimensional problems, complex velocity fields can stretch and deform initially smooth data into thin filaments which feature poorly resolved steep gradients regardless of how well the initial conditions are resolved. This behavior can be replicated using a time-dependent velocity field which deforms an initially circular tracer distribution into a narrow coil before reversing and returning the tracer to its original shape. This test and non-divergent velocity field were originally described in \citep{LeVeque1996}. The velocity field is periodic over a time interval $0 \leq t \leq T=5$ and is defined by the streamfunction
 \al{
 {\Psi}(x,y,t) = \frac{1}{\pi} \sin(\pi x)^2  \sin ( \pi y )^2 \cos \left( \frac{\pi t}{T} \right), 
@@ -394,7 +382,7 @@ Tests involving the same flow and initial condition were considered in \citep{ul
 
 Figure~\ref{fig:2dCosbell24} shows the results of each method for the deformation flow for a total of nine different limiter and method combinations. Each panel uses a $24 \times 24$ element grid with $N=4$ for a total of 120 degrees of freedom (DOFs) along each coordinate. Panels a), b), and c) use a fully two-dimensional nodal DG method, while panels the bottom two rows use dimensional splitting with nodal and modal basis functions respectively. Maximum and minimum values are listed in each panel, as well as the error measured from the analytic solution in $L^2$ and $L^{\infty}$ grid norms (listed as $E_2$ and $E_{\infty}$, respectively).
 
-All three of the unlimited approximations does a fair job of maintaining the original amplitude of the exact solution after deformation as well as correctly estimating the the location of the peak. However, as expected all three unlimited methods permit spurious negatives, shown with light gray contours, between 4 and 7 percent of the initial amplitude of the bell. These negatives are completely removed in each of the limited solutions. Except for the elimination of all negative tracer densities, the TMAR limited solutions appear similar in quality to their unlimited counterparts. The TMAR limited nodal solutions do see a 5-7\% decrease in their global maximum and a noticeable increase in both error norms, however the TMAR limited modal result sees a less than 1\% decrease in maximum amplitude and almost no change in $E_2$. Finally, the TMAR limited modal solution presents lower errors than any of the {\it unlimited} nodal solutions. In contrast, all of the ZS limited solutions have noticeably degraded the original solution, with a substantial distortion of the originally symmetric tracer field, a 12-25\% reduction in the global maximum, and a significant increase to both error norms. Results after doubling the number of elements along each coordinate to 48 are shown in Figure~\ref{fig:2dCosbell48}. At this resolution, the TMAR solutions look virtually identical to the unlimited solutions with the negatives removed and suffer very little degradation in the maximum amplitude. However, the relative performance of the TMAR solutions remains unchanged, with the modal solution remaining the best. The ZS limited solutions are also improved compared to the Figure~\ref{fig:2dCosbell24} results, although there are still oscillations in the solution (most visible in the outermost plotted contours).
+All three of the unlimited approximations do a fair job of maintaining the original amplitude of the exact solution after deformation as well as correctly estimating the the location of the peak. However, as expected all three unlimited methods permit spurious negatives, shown with light gray contours, between 4 and 7 percent of the initial amplitude of the bell. These negatives are completely removed in each of the limited solutions. Except for the elimination of all negative tracer densities, the TMAR limited solutions appear similar in quality to their unlimited counterparts. The TMAR limited nodal solutions do see a 5-7\% decrease in their global maximum and a noticeable increase in both error norms, however the TMAR limited modal result sees a less than 1\% decrease in maximum amplitude and almost no change in $E_2$. Finally, the TMAR limited modal solution presents lower errors than any of the {\it unlimited} nodal solutions. In contrast, all of the ZS limited solutions have noticeably degraded the original solution, with a substantial distortion of the originally symmetric tracer field, a 12-25\% reduction in the global maximum, and a significant increase to both error norms. Results after doubling the number of elements along each coordinate to 48 are shown in Figure~\ref{fig:2dCosbell48}. At this resolution, the TMAR solutions look virtually identical to the unlimited solutions with the negatives removed and suffer very little degradation in the maximum amplitude. However, the relative performance of the TMAR solutions remains unchanged, with the modal solution remaining the best. The ZS limited solutions are also improved compared to the Figure~\ref{fig:2dCosbell24} results, although there are still oscillations in the solution (most visible in the outermost plotted contours).
 
 We also investigate the impact of the limiters on $p$-refinement in two-dimensions. In order to isolate the impact of the limiters as a function of polynomial degree only, Figure~\ref{fig:2dCosbellPref} shows the results of the limited and unlimited unsplit nodal methods for the deformation flow as the polynomial degree is changed while maintaining a constant total degrees of freedom. In each panel there are a total of 120 DOF along each coordinate. Panels a), b), and c) use a $30 \times 30$ element grid with $N=3$ (4 DOF along each coordinate per element). Panels d), e), and f) increase the local polynomial degree to $N=4$ but simultaneously coarsen the number of elements to a $24 \times 24$ grid. Lastly, panels g), h), and i) use a $20 \times 20$ element grid with $N=5$. The time steps taken for each method are again chosen to remain no greater than 95\% of the maximum value that will maintain nonnegativity. The first column of Figure~\ref{fig:2dCosbellPref} illustrates the effects of $p$-refinement on the unlimited method. Despite having an identical number of degrees of freedom, the results obtained using higher degree polynomial reconstructions show improvement in both error norms as well as in the magnitudes of undershoots. The higher degree results also better maintain the circular symmetry and approximate the maximum value of the final solution better than in the cubic case. Similar to the earlier $p$-refinement results shown in Figure~\ref{fig:cosConv-p}, the ZS results in the second column of Figure~\ref{fig:2dCosbellPref} are increasingly degraded as $N$ is increased. This suggests that the ZS limiter will require more degrees of freedom in order to produce a satisfactory result for higher degree polynomial truncations despite the problem remaining unchanged. By comparison, in the last column we see that although the TMAR limiter does have an impact on the error at higher orders, it nevertheless maintains a similar type of improvement that is present in the unlimited solutions as the degree of the local polynomial approximation is increased.
 
@@ -554,35 +542,6 @@ Degree  & Modal & Nodal & ZS \\
 \end{tabular}
 \caption{Maximum permissible 1D CFL values for DG methods of polynomial degree 2 through 5 schemes with SSPRK3 time stepping. ZS values are from \citep{Zhang2010}; Modal and nodal values are from \citep{ullrichWaves2013}.}
 \label{cflTable}
-\end{center}
-\end{table}
-
-\begin{table}[t]
-\begin{center}
-\begin{tabular}{ll@{\hskip 6ex}ccccccccc}
-\topline
-    &  & \multicolumn{4}{l}{TMAR} & & \multicolumn{4}{l}{ZS} \\
-\cline{3-6} \cline{8-11}
-N   & Mesh size & $L_1$ & Order & $L_{\infty}$ & Order & & $L_1$ & Order & $L_{\infty}$ & Order  \\
-\midline
-2 & $16\times16$ & 4.84E-3 & -- & 6.78E-1 & -- & & 5.30E-3 & -- & 7.08E-1 & -- \\
-  & $32\times32$ & 1.23E-3 & 1.98 & 2.40E-1 & 1.50 & & 1.27E-3 & 2.07 & 2.45E-1 & 1.53 \\
-  & $64\times64$ & 2.54E-4 & 2.27 & 3.80E-2 & 2.66 & & 2.57E-4 & 2.30 & 3.80E-2 & 2.69 \\
-  & $128\times128$ & 1.85E-5 & 3.78 & 2.82E-3 & 3.75 & & 1.84E-5 & 3.80 & 2.82E-3 & 3.75 \\
-  
-\rule{0pt}{6ex} 3 & $16\times16$ & 1.28E-3 & -- & 2.31E-1 & -- & & 1.72E-3 & -- & 2.65E-1 & -- \\
-  & $32\times32$ & 1.24E-4 & 3.37 & 1.53E-2 & 3.92 & & 1.44E-4 & 3.58 & 1.55E-2 & 4.10 \\
-  & $64\times64$ & 3.45E-6 & 5.17 & 7.52E-4 & 4.35 & & 4.05E-6 & 5.15 & 7.52E-4 & 4.37 \\
-  & $128\times128$ & 1.04E-7 & 5.05 & 4.94E-5 & 3.95 & & 1.12E-7 & 5.18 & 4.94E-5 & 3.93 \\
-  
-\rule{0pt}{6ex} 4 & $16\times16$ & 3.63E-4 & -- & 4.38E-2 & -- & & 1.59E-3 & -- & 1.51E-1 & -- \\
-  & $32\times32$ & 4.46E-6 & 6.34 & 1.26E-3 & 5.12 & & 3.45E-5 & 5.53 & 4.88E-3 & 4.95 \\
-  & $64\times64$ & 8.29E-8 & 5.75 & 3.45E-5 & 5.19 & & 9.68E-8 & 8.48 & 3.45E-5 & 7.15 \\
-  & $128\times128$ & 2.20E-9 & 5.24 & 1.05E-6 & 5.04 & & 2.31E-9 & 5.39 & 1.05E-6 & 5.04 \\
-\botline
-\end{tabular}
-\caption{Error norms and convergence rates for limited approximations to solid body rotation of $C^5$ cosine bell.}
-\label{sbrConv}
 \end{center}
 \end{table}
 
